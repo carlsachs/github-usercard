@@ -5,8 +5,14 @@
 
 axios.get("https://api.github.com/users/carlsachs")
   .then(response => {
-  console.log(response);
+    const whole = document.querySelector('.cards');
+    const info = response.data;
+    const cardInfo = newCard(info);
+    whole.append(cardInfo);
   })
+  .catch(err => {
+    console.log('This is an error');
+  });
 
 /* Step 2: Inspect and study the data coming back, this is YOUR 
    github info! You will need to understand the structure of this 
@@ -29,10 +35,29 @@ axios.get("https://api.github.com/users/carlsachs")
           user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+const followersArray = [
+  'tetondan',
+  'dustinmyers',
+  'justsml',
+  'luishrd',
+  'bigknell'
+];
+// const whole = document.querySelector('.cards')
+followersArray.forEach(e => {
+  axios.get(`https://api.github.com/users/${e}`)
+  .then(response => {
+    console.log(response);
+    const whole = document.querySelector('.cards');
+    const info = response.data;
+    const cardInfo = newCard(info);
+    whole.append(cardInfo);
+  })
+  .catch(err => {
+    console.log('This is an error');
+  });
+});
 
-
-function (obj){
+function newCard(obj){
 
   const card = document.createElement('div');
   const img = document.createElement('img');
@@ -41,6 +66,7 @@ function (obj){
   const username = document.createElement('p');
   const location = document.createElement('p');
   const profile = document.createElement('p');
+  const link = document.createElement('a');
   const followers = document.createElement('p');
   const following = document.createElement('p');
   const bio = document.createElement('p');
@@ -51,12 +77,26 @@ function (obj){
   cardInfo.append(username)
   cardInfo.append(location)
   cardInfo.append(profile)
+  profile.append(link)
   cardInfo.append(followers)
   cardInfo.append(following)
-  cardInfo.append(bio)  
+  cardInfo.append(bio)
+  
+  card.classList.add('card')
+  cardInfo.classList.add('card-info')
+  name.classList.add('name')
+  username.classList.add('username')
 
+  name.textContent = obj.name;
+  location.textContent = `${obj.location}`;
+  link.href = obj.html_url;
+  link.textContent = `Profile: ${obj.html_url}`;
+  followers.textContent = `Followers: ${obj.followers}`;
+  following.textContent = `Following: ${obj.following}`;
+  bio.textContent = obj.bio;
+  img.src = obj.avatar_url;
 
-
+  return card;
 
 }
 /* Step 3: Create a function that accepts a single object as its only argument,
